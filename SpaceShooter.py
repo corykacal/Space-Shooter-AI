@@ -432,7 +432,7 @@ def game():
     #Main Loop
     while keepGoing:
        if(len(playerSprite.sprites())!=0):
-            pygame.event.post(shipAI.sendKey(enemySprites,playerSprite))
+            shipAI.sendKey(enemySprites,playerSprite)
        clock.tick(30)
        #input
        for event in pygame.event.get():
@@ -497,7 +497,7 @@ def game():
 
        #Spawn new enemies
        counter += 1
-       if counter >= 500:
+       if counter >= 100:
           enemySprites.add(Enemy(300))
           counter = 0
 
