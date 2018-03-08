@@ -10,26 +10,26 @@ class spaceAI(object):
         self.left = {'scancode': 113, 'key': 276, 'unicode': u'', 'mod': 4096}
         self.up = {'scancode': 111, 'key': 273, 'unicode': u'', 'mod': 4096}
         self.center = {'scancode': 114, 'key': 275, 'unicode': u'', 'mod': 4096}
-        self.moves = [self.right,self.left,self.down,self.up,self.center]
+        self.moves = [self.center,self.right,self.left,self.down,self.up]
         #both in respective order
-        self.coordMoves = [[20,0],[-20,0],[0,-20],[0,-20],[0,0]]
+        self.coordMoves = [[0,0],[20,0],[-20,0],[0,-20],[0,-20]]
 
 
 
-    def sendKey(self,enemySprites,shipSprite):
-        scores = [self.evaluationFunction(enemySprites,shipSprite,action) for action in self.moves]
+    def sendKey(self,enemySprites,shipSprite,shield,score):
+        scores = [self.evaluationFunction(enemySprites,shipSprite,action,shield,score) for action in self.moves]
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices)
+        print bestScore
         fireGun = {'state': 1, 'gain': 1}
         gun = self.makeActionEvent(fireGun)
         eventdown,eventup = self.makeKeyEvent(self.moves[chosenIndex])
-        pygame.event.post(gun)
         pygame.event.post(eventup)
         pygame.event.post(eventdown)
 
 
-    def evaluationFunction(self, esprites, shipSprite, action):
+    def evaluationFunction(self, esprites, shipSprite, action,shield,score):
         shipSprite = shipSprite.sprites()[0]
         enemySprites = copy.deepcopy(esprites)
         nextShipSprite = copy.deepcopy(shipSprite)
@@ -42,18 +42,28 @@ class spaceAI(object):
         playerSprites = pygame.sprite.RenderPlain(())
         playerSprites.add(nextShipSprite)
         newEnemySprites = pygame.sprite.RenderPlain(())
+        closeenemy = 0
+        shieldCur = shield
+        enemyxy = 0
         for enemy in enemySprites:
             enemyCopy = copy.deepcopy(enemy)
             nextEnemy = self.getNewEnemy(enemyCopy)
             newEnemySprites.add(nextEnemy)
             enemyCoord = nextEnemy.getRect()
             enemyxy = [enemyCoord.x,enemyCoord.y]
-            minDistEnemy = min(minDistEnemy, self.euclidean(newshipxy,enemyxy))
+            if (minDistEnemy != min(minDistEnemy, self.euclidean(newshipxy,enemyxy))):
+                minDistEnemy = min(minDistEnemy, self.euclidean(newshipxy,enemyxy))
+                closeenemy = enemyxy
             maxDistEnemy = max(maxDistEnemy, self.euclidean(newshipxy,enemyxy))
 
-        if(pygame.sprite.groupcollide(newEnemySprites,playerSprites,1,1)):
+        collison = 0
+
+
+        if(len(pygame.sprite.groupcollide(newEnemySprites,playerSprites,1,0))>0):
             print 'avoided collison'
-            return -10000
+            shieldCur = shieldCur - 10
+            collison = -100000
+
 
         gameBoundry = [[0,0],[0,800],[260,0],[260,800]]
         minDistBoundry = 9999999
@@ -62,8 +72,10 @@ class spaceAI(object):
 
 
         distFromCenter = self.euclidean(newshipxy,[400,150])
-
-        return minDistEnemy + maxDistEnemy*.6 + distFromCenter*-.9
+        #add a way to check score and make sure ship avoids lasers and accounts for shield too
+        #and add firing function
+        print maxDistEnemy*.6 + minDistEnemy*.7 + distFromCenter*-1 + collison + shieldCur*5
+        return maxDistEnemy*.6 + minDistEnemy*.7 + distFromCenter*-1 + collison + shieldCur*5
 
     def getNewEnemy(self,sprite):
         sprite.rect.centerx += sprite.dx

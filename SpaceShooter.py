@@ -432,7 +432,7 @@ def game():
     #Main Loop
     while keepGoing:
        if(len(playerSprite.sprites())!=0):
-            shipAI.sendKey(enemySprites,playerSprite)
+            shipAI.sendKey(enemySprites,playerSprite,score.shield,score.score)
        clock.tick(30)
        #input
        for event in pygame.event.get():
@@ -442,13 +442,13 @@ def game():
                 if event.key == pygame.K_ESCAPE:
                     keepGoing = False
                 elif event.key == pygame.K_LEFT:
-                    player.dx = -20
+                    player.dx = -10
                 elif event.key == K_RIGHT:
-                    player.dx = 20
+                    player.dx = 10
                 elif event.key == K_UP:
-                    player.dy = -20
+                    player.dy = -10
                 elif event.key == K_DOWN:
-                    player.dy = 20
+                    player.dy = 10
             elif event.type == KEYUP:
                 if event.key == K_LEFT:
                     player.dx = 0
