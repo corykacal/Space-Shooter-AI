@@ -42,7 +42,7 @@ background.fill((0,0,0))
 
 #Music
 music = pygame.mixer.music.load ("data/music/blassic.ogg") #lost.ogg
-pygame.mixer.music.play(-1)
+#pygame.mixer.music.play(-1)
 
 enemylist = []
 
@@ -75,7 +75,6 @@ def load_sound(name):
         print 'Cannot load sound:', fullname
         raise SystemExit, message
     return sound
-
 
 
 #Sprites
@@ -125,7 +124,7 @@ class Player(pygame.sprite.Sprite):
             self.lasertimer = self.lasertimer + 1
             if self.lasertimer == self.lasermax:
                 laserSprites.add(Laser(self.rect.midtop))
-                fire.play()
+                #fire.play()
                 self.lasertimer = 0
 
         #Fire the bomb
@@ -137,7 +136,7 @@ class Player(pygame.sprite.Sprite):
                     self.bombamount = self.bombamount -1
                     score.bomb += -1
                     bombSprites.add(Bomb(self.rect.midtop))
-                    torpedo.play()
+                    #torpedo.play()
 
 
         #Player Boundaries
@@ -188,7 +187,7 @@ class Bomb(pygame.sprite.Sprite):
             self.rect.move_ip(0, -5)
         if pygame.sprite.groupcollide(enemySprites, bombSprites, 1, 1):
                bombExplosionSprites.add(BombExplosion(self.rect.center))
-               explode.play()
+               #explode.play()
 
 #Laser class
 class EnemyLaser(pygame.sprite.Sprite):
@@ -228,24 +227,24 @@ class Enemy(pygame.sprite.Sprite):
         if efire == 1:
             enemyLaserSprites.add(EnemyLaser(self.rect.midbottom))
             efire = load_sound("sounds/elaser.ogg")
-            efire.play()
+            #efire.play()
 
         #Laser Collisions
         if pygame.sprite.groupcollide(enemySprites, laserSprites, 1, 1):
            explosionSprites.add(EnemyExplosion(self.rect.center))
-           explode.play()
+           #explode.play()
            score.score += 10
 
         #Bomb Collisions
         if pygame.sprite.groupcollide(enemySprites, bombSprites, 1, 1):
            bombExplosionSprites.add(BombExplosion(self.rect.center))
-           explode.play()
+           #explode.play()
            score.score += 10
 
         #Bomb Explosion Collisions
         if pygame.sprite.groupcollide(enemySprites, bombExplosionSprites, 1, 0):
            explosionSprites.add(EnemyExplosion(self.rect.center))
-           explode.play()
+           #explode.play()
            score.score += 10
 
 
@@ -432,7 +431,7 @@ def game():
     #Main Loop
     while keepGoing:
        if(len(playerSprite.sprites())!=0):
-            shipAI.sendKey(enemySprites,playerSprite,score.shield,score.score)
+            shipAI.getAction(enemySprites,playerSprite,score.shield,score.score)
        clock.tick(30)
        #input
        for event in pygame.event.get():
@@ -517,7 +516,7 @@ def game():
 
        #Check if enemy lasers hit player's ship
        for hit in pygame.sprite.groupcollide(enemyLaserSprites, playerSprite, 1, 0):
-           explode.play()
+           #explode.play()
            explosionSprites.add(Shield(player.rect.center))
            score.shield -= 10
            if score.shield <= 0:
@@ -528,7 +527,7 @@ def game():
 
        #Check if enemy collides with player
        for hit in pygame.sprite.groupcollide(enemySprites, playerSprite, 1, 0):
-           explode.play()
+           #explode.play()
            explosionSprites.add(Shield(player.rect.center))
            score.shield -= 10
            if score.shield <= 0:
@@ -539,12 +538,12 @@ def game():
        #Check if player collides with shield powerup
        for hit in pygame.sprite.groupcollide(shieldPowerups, playerSprite, 1, 0):
             if score.shield < 100:
-               powerup.play()
+               #powerup.play()
                score.shield += 10
 
        #Check if player collides with bomb powerup
        for hit in pygame.sprite.groupcollide(bombPowerups, playerSprite, 1, 0):
-           powerup.play()
+           #powerup.play()
            player.bombamount += 1
            score.bomb += 1
 
