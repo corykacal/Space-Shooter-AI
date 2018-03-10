@@ -203,6 +203,9 @@ class EnemyLaser(pygame.sprite.Sprite):
         else:
             self.rect.move_ip(0, 15)
 
+    #added for AI
+    def getRect(self):
+        return self.rect
 
 #Enemy class
 class Enemy(pygame.sprite.Sprite):
@@ -430,8 +433,9 @@ def game():
 #AI moves
     #Main Loop
     while keepGoing:
-       if(len(playerSprite.sprites())!=0):
-            shipAI.getAction(enemySprites,playerSprite,score.shield,score.score)
+       print enemySprites
+       #if(len(playerSprite.sprites())!=0):
+       #     shipAI.getAction(enemySprites,playerSprite,enemyLaserSprites,score.shield,score.score)
        clock.tick(30)
        #input
        for event in pygame.event.get():
@@ -704,11 +708,11 @@ def aboutMenu():
 
     info = SpaceMenu(
         [""],
-        ["Space Shooter Beta"],
+        ["Space Shooter ALPHA"],
         [""],
         ["Devloped by the Monty Pythons."],
         [""],
-        ["Student's from Mr. Raza's DPT 110 class"],
+        ["hol up we in here AI singularity gang"],
         [""],
         [""],
         ["      PRESS ESC TO RETURN            "])
