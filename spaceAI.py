@@ -134,7 +134,7 @@ class gameState(object):
         pos = self.moves.index(action)
         newCoord = self.coordMoves[pos]
         sprite.rect.move_ip(newCoord[0],newCoord[1])
-        #enemy update
+        #enemies update
         newEnemies = copy.deepcopy(self.enemies)
         for sprite in newEnemies:
             sprite.rect.centerx += sprite.dx
