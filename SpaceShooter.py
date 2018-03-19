@@ -434,8 +434,8 @@ def game():
     #Main Loop
     while keepGoing:
        print enemySprites
-       #if(len(playerSprite.sprites())!=0):
-       #     shipAI.getAction(enemySprites,playerSprite,enemyLaserSprites,score.shield,score.score)
+       if(len(playerSprite.sprites())!=0):
+            shipAI.getAction(enemySprites,playerSprite,enemyLaserSprites,score.shield,score.score)
        clock.tick(30)
        #input
        for event in pygame.event.get():
