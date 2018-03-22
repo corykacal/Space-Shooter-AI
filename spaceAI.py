@@ -141,6 +141,13 @@ class gameState(object):
             sprite.rect.centery += sprite.dy
         return gameState(newEnemies,newPlayer,shield,score)
 
+    def getEnemyCoords(self):
+        enemyCoordList = []
+        for enemy in enemies:
+            coord = (enemy.x,enemy.y)
+            enemyCoordList.append(coord)
+        return enemyCoordList
+
 
 
 
