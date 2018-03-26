@@ -10,6 +10,7 @@ class spaceAI(object):
         self.left = {'scancode': 113, 'key': 276, 'unicode': u'', 'mod': 4096}
         self.up = {'scancode': 111, 'key': 273, 'unicode': u'', 'mod': 4096}
         self.center = {'scancode': 38, 'key': 97, 'unicode': u'a', 'mod': 4096}
+        #self.shoot = {'scancode': 114, 'unicode
         self.moves = [self.center,self.right,self.left,self.down,self.up]
         #both in respective order
         self.coordMoves = [[0,0],[10,0],[-10,0],[0,10],[0,-10]]
@@ -29,6 +30,7 @@ class spaceAI(object):
         gun = self.makeActionEvent(fireGun)
         state = gameState(enemySprites,shipSprite,shield,score)
         eventdown,eventup = self.makeKeyEvent(self.moves[chosenIndex])
+        #eventdown,eventup = self.makeKeyEvent(self.shoot)
         pygame.event.post(eventdown)
 
 
@@ -43,7 +45,10 @@ class spaceAI(object):
         shipxy = [shipCoord.x,shipCoord.y]
         newshipxy = [nextShipCoord.x,nextShipCoord.y]
 
+
+        minDistEnemyX = 9999999
         minDistEnemy = 9999999
+        maxDistEnemyY = -99999
         maxDistEnemy = -99999
         playerSprites = pygame.sprite.RenderPlain(())
         playerSprites.add(nextShipSprite)
@@ -56,7 +61,9 @@ class spaceAI(object):
             newEnemySprites.add(newEnemy)
             newEnemyCoord = newEnemy.getRect()
             enemyxy = [newEnemyCoord.x,newEnemyCoord.y]
+            minDistEnemyX = min(minDistEnemyX, self.xDist(newshipxy,enemyxy))
             minDistEnemy = min(minDistEnemy, self.euclidean(newshipxy,enemyxy))
+            maxDistEnemyY = max(maxDistEnemy, self.yDist(newshipxy,enemyxy))
             maxDistEnemy = max(maxDistEnemy, self.euclidean(newshipxy,enemyxy))
 
         copy_laserSprites = copy.deepcopy(laserSprites)
@@ -84,13 +91,16 @@ class spaceAI(object):
             minDistBoundry = min(minDistBoundry,self.euclidean(newshipxy,coord))
 
 
-        print enemySprites
 
         distFromCenter = self.euclidean(newshipxy,[368,376])
         #add a way to check score and make sure ship avoids lasers and accounts for shield too
         #and add firing function
 
-        return maxDistEnemy*0 + minDistEnemy*0 + distFromCenter*-1 + collison*0 + shieldCur*0 + minDistLaser
+        #return for going to enemy x coord bu avoiding enemy y coord
+        return minDistEnemyX*-1 * maxDistEnemyY*.5 + shieldCur + minDistEnemy * .3 + collison
+
+
+        #return maxDistEnemy*0 + minDistEnemy*1 + distFromCenter*-1 + shieldCur + minDistLaser
 
     def getNewLaser(self,sprite):
         sprite.rect.move_ip(0, -15)
@@ -117,6 +127,11 @@ class spaceAI(object):
     def euclidean(self,c1,c2):
         return math.sqrt(pow((c2[0]-c1[0]),2) + pow((c2[1]-c1[1]),2))
 
+    def xDist(self,c1,c2):
+        return abs(c1[0]-c2[0])
+
+    def yDist(self,c1,c2):
+        return abs(c1[1]-c2[1])
 
 # work in progress
 class gameState(object):

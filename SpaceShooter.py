@@ -120,7 +120,8 @@ class Player(pygame.sprite.Sprite):
 
         #Fire the laser
         key = pygame.key.get_pressed()
-        if key[pygame.K_SPACE]:
+        #if key[pygame.K_SPACE]:
+        if True:
             self.lasertimer = self.lasertimer + 1
             if self.lasertimer == self.lasermax:
                 laserSprites.add(Laser(self.rect.midtop))
@@ -433,12 +434,12 @@ def game():
 #AI moves
     #Main Loop
     while keepGoing:
-       print enemySprites
        if(len(playerSprite.sprites())!=0):
             shipAI.getAction(enemySprites,playerSprite,enemyLaserSprites,score.shield,score.score)
        clock.tick(30)
        #input
        for event in pygame.event.get():
+            print event
             if event.type == pygame.QUIT:
                 keepGoing = False
             elif event.type == pygame.KEYDOWN:
@@ -500,7 +501,7 @@ def game():
 
        #Spawn new enemies
        counter += 1
-       if counter >= 100:
+       if counter >= 50:
           enemySprites.add(Enemy(300))
           counter = 0
 
